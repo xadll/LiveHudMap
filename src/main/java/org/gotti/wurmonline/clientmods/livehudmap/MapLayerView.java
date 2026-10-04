@@ -9,58 +9,60 @@ import com.wurmonline.client.game.PlayerPosition;
 import com.wurmonline.client.game.World;
 import com.wurmonline.client.renderer.PickData;
 import com.wurmonline.math.FastMath;
+import java.util.logging.Logger;
 
 public class MapLayerView {
 	
-	private RenderType type;
-	
-	private MapRenderer renderer;
-	
-	private int zoom;
+    private static final Logger LOG = LiveHudMapMod.LOG;
+    
+    private RenderType type;
 
-	private World world;
+    private MapRenderer renderer;
 
-	public MapLayerView(World world, RenderType renderType) {
-		this.world = world;
-		this.zoom = 1;
-		this.type = renderType;
-		this.renderer = this.type.createMapRenderer(world);
-	}
-	
-	public void zoomIn() {
-		if (type.getMapSize() / zoom > 4) {
-			zoom *= 2;
-		}
-	}
-	
-	public void zoomOut() {
-		if (zoom > 1) {
-			zoom /= 2;
-		}
-	}
+    private int zoom;
 
-	public BufferedImage render(int px, int py) {
-		int sz = type.getMapSize() / zoom;
-		return renderer.createMapDump(px - sz / 2, py - sz / 2, sz, sz, px, py);
-	}
+    private World world;
 
-	public void setRenderer(RenderType renderType) {
-		if (renderType != type) {
-			type = renderType;
-			renderer = type.createMapRenderer(world);
-			if (type.getMapSize() / zoom < 4) {
-				zoom = FastMath.nearestPowerOfTwo(type.getMapSize() / 4);
-			}
-			if (zoom == 0) {
-				zoom = 1;
-			}
-		}
-	}
-	
-	public void pick(PickData pickData, float xMouse, float yMouse) {
-		final int sz = this.type.getMapSize() / this.zoom;
-		final PlayerPosition pos = this.world.getPlayer().getPos();
-		renderer.pick(pickData, xMouse, yMouse, sz, sz, pos.getTileX(), pos.getTileY());
-	}
-	
+    public MapLayerView(World world, RenderType renderType) {
+        this.world = world;
+        this.zoom = 1;
+        this.type = renderType;
+        this.renderer = this.type.createMapRenderer(world);
+    }
+
+    public void zoomIn() {
+        if (type.getMapSize() / zoom > 4) {
+            zoom *= 2;
+        }
+    }
+
+    public void zoomOut() {
+        if (zoom > 1) {
+            zoom /= 2;
+        }
+    }
+
+    public BufferedImage render(int px, int py) {
+        int sz = type.getMapSize() / zoom;
+        return renderer.createMapDump(px - sz / 2, py - sz / 2, sz, sz, px, py);
+    }
+
+    public void setRenderer(RenderType renderType) {
+        if (renderType != type) {
+            type = renderType;
+            renderer = type.createMapRenderer(world);
+            if (type.getMapSize() / zoom < 4) {
+                zoom = FastMath.nearestPowerOfTwo(type.getMapSize() / 4);
+            }
+            if (zoom == 0) {
+                zoom = 1;
+            }
+        }
+    }
+
+    public void pick(PickData pickData, float xMouse, float yMouse) {
+        final int sz = this.type.getMapSize() / this.zoom;
+        final PlayerPosition pos = this.world.getPlayer().getPos();
+        renderer.pick(pickData, xMouse, yMouse, sz, sz, pos.getTileX(), pos.getTileY());
+    }
 }

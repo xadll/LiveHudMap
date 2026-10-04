@@ -4,14 +4,22 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import com.wurmonline.client.game.NearTerrainDataBuffer;
+import com.wurmonline.client.renderer.PickData;
+import com.wurmonline.mesh.FieldData;
+import com.wurmonline.mesh.FoliageAge;
 import com.wurmonline.mesh.Tiles.Tile;
+import org.gotti.wurmonline.clientmods.livehudmap.DeedData;
 
 public class MapRendererTopographic extends AbstractSurfaceRenderer {
-	private short interval;
+	
+        private final short interval;
 
+        private final NearTerrainDataBuffer mBuffer;
+        
 	public MapRendererTopographic(NearTerrainDataBuffer buffer) {
 		super(buffer);
 		this.interval = 250;
+                mBuffer = buffer;
 	}
 
 	@Override
@@ -26,6 +34,10 @@ public class MapRendererTopographic extends AbstractSurfaceRenderer {
 
 		for (int x = 0; x < lWidth; x++) {
 			for (int y = lWidth - 1; y >= 0; y--) {
+                            
+				final int tx = x + xo;
+				final int ty = y + yo;
+                                
 				final short height = getSurfaceHeight(x + xo, y + yo);
 				final short nearHeightNX = x == 0 ? height : getSurfaceHeight(x + xo - 1, y + yo);
 				final short nearHeightNY = y == 0 ? height : getSurfaceHeight(x + xo, y + yo - 1);
@@ -63,6 +75,32 @@ public class MapRendererTopographic extends AbstractSurfaceRenderer {
 					g = 0;
 					b = 0;
 				}
+                                
+				if ( DeedData.showDeeds )
+				{
+					if ( DeedData.map[tx][ty] == (byte)1 )
+					{
+						if ( g <= 215 )
+						{
+							g = g + 40;
+						}
+						else
+						{
+							g = 255;
+						}
+					}
+					else if ( DeedData.map[tx][ty] == (byte)2 )
+					{
+						if ( r <= 215 )
+						{
+							r = r + 40;
+						}
+						else
+						{
+							r = 255;
+						}
+					}
+				}
 
 				data[(x + y * lWidth) * 3 + 0] = r;
 				data[(x + y * lWidth) * 3 + 1] = g;
@@ -84,6 +122,51 @@ public class MapRendererTopographic extends AbstractSurfaceRenderer {
 			}
 		}
 		return false;
+	}
+        
+        private Tile getEffectiveTileType(int x, int y) {
+            return getTileType(x, y);
+        }
+
+        private boolean isTreeorBush(Tile tileType) {
+            if (tileType == null) return false;
+            return tileType.isBush() || tileType.isTree();
+        }
+
+        private boolean isField(Tile tileType) {
+            if (tileType == null) return false;
+            return tileType == Tile.TILE_FIELD || tileType == Tile.TILE_FIELD2;
+        }
+        
+	@Override
+	public void pick(PickData pickData, float xMouse, float yMouse, int width, int height, int px, int py) 
+	{
+		final int ox = px + (int)( xMouse * width ) - width / 2;
+		final int oy = py + (int)( yMouse * height ) - height / 2;
+		final Tile tile = getEffectiveTileType( ox, oy );
+		
+		byte lData = mBuffer.getData( ox, oy );
+		String lSuffix = " ";
+		
+		if ( isTreeorBush( tile ) ) 
+		{
+			FoliageAge lFoliAge = FoliageAge.getFoliageAge( lData );
+			lSuffix += lFoliAge.getAgeName();
+			if ( ( lFoliAge.getAgeId() > FoliageAge.YOUNG_FOUR.getAgeId() ) && ( lFoliAge.getAgeId() < FoliageAge.OVERAGED.getAgeId() ) && tile.usesNewData() && tile.isNormal() )
+			{
+				lSuffix += " harvestable";
+			}
+			pickData.addText( tile.getName() + lSuffix );
+		}
+		else if ( isField( tile ) )
+		{
+			lSuffix += FieldData.getTypeName( tile, lData ) + ", " + FieldData.getAgeName( lData );
+			if ( !FieldData.isTended( lData) )
+			{
+				lSuffix += ", untended";
+			}
+			pickData.addText( tile.getName() + lSuffix );
+		}
 	}
 
 }

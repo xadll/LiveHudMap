@@ -5,23 +5,20 @@ Sponsored by [Razors Edge (Ages of Urath Saga)](http://forum.wurmonline.com/inde
 ## Installation
 Requires [client modloader](https://github.com/ago1024/WurmClientModLauncher/releases/latest)
 
-* Download livemap.zip
-* Extract livemap.zip into client folder (the jar should land in mods/livemap/livemap.jar)
+* Download `livemap.zip`
+* Extract `livemap.zip` into client folder (the jar should land in `mods/livemap/livemap.jar`)
 * Enjoy
 
-![Flat view](http://i.imgur.com/uTrcTix.png) ![3D view](http://i.imgur.com/BIOwfvm.png) ![Topgraphic view](http://i.imgur.com/oEuKg7j.png) ![Cave view](http://i.imgur.com/OChWVAh.png)
+![Flat View](img/flat-view.png) ![3D View](img/3d-view.png) ![Topographic View](img/topographic-view.png) ![Cave View](img/cave-view.png)
 
-## Issues
+## Known Issues
 
-* The buttons are ugly as hell
 * The 3D view may scroll out of range when walking up a high mountain
-* Your dot may end up behind a mountain in 3D view
+* Your player location marker may end up behind a mountain in 3D view
 
 ## Sklo Settings
-Set your prefered server in the property files (lib or nov)
-if you cross a server, you need new data. please open the console ingame (F1) and enter:
-servermap lib,
-servermap nov
-or
-servermap inf
-for your server
+Set your prefered server in the property files
+
+## In-Game Commands
+
+`toggle livemap`

@@ -55,9 +55,9 @@ public class MapRendererCave extends AbstractCaveRenderer {
 					b = (int) (b * 0.2f + 1.0f * 0.4f * 256f);
 				}
 				
-				if ( DeedData.mShowDeeds )
+				if ( DeedData.showDeeds )
 				{
-					if ( DeedData.mMap[tx][ty] == (byte)1 )
+					if ( DeedData.map[tx][ty] == (byte)1 )
 					{
 						if ( g <= 215 )
 						{
@@ -68,7 +68,7 @@ public class MapRendererCave extends AbstractCaveRenderer {
 							g = 255;
 						}
 					}
-					else if ( DeedData.mMap[tx][ty] == (byte)2 )
+					else if ( DeedData.map[tx][ty] == (byte)2 )
 					{
 						if ( r <= 215 )
 						{

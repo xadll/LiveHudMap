@@ -2,7 +2,6 @@ package org.gotti.wurmonline.clientmods.livehudmap.renderer;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.logging.Logger;
 
 import org.gotti.wurmonline.clientmods.livehudmap.DeedData;
 
@@ -13,8 +12,8 @@ import com.wurmonline.mesh.FoliageAge;
 import com.wurmonline.mesh.Tiles.Tile;
 
 public class MapRendererFlat extends AbstractSurfaceRenderer {
-	final Logger logger = Logger.getLogger( MapRendererFlat.class.getName() );
-	NearTerrainDataBuffer mBuffer;
+    
+	private final NearTerrainDataBuffer mBuffer;
 	
 	public MapRendererFlat(NearTerrainDataBuffer buffer) {
 		super(buffer);
@@ -51,9 +50,9 @@ public class MapRendererFlat extends AbstractSurfaceRenderer {
 				int g = color.getGreen();
 				int b = color.getBlue();
 
-				if ( DeedData.mShowDeeds )
+				if ( DeedData.showDeeds )
 				{
-					if ( DeedData.mMap[tx][ty] == (byte)1 )
+					if ( DeedData.map[tx][ty] == (byte)1 )
 					{
 						if ( g <= 215 )
 						{
@@ -64,7 +63,7 @@ public class MapRendererFlat extends AbstractSurfaceRenderer {
 							g = 255;
 						}
 					}
-					else if ( DeedData.mMap[tx][ty] == (byte)2 )
+					else if ( DeedData.map[tx][ty] == (byte)2 )
 					{
 						if ( r <= 215 )
 						{
@@ -99,32 +98,22 @@ public class MapRendererFlat extends AbstractSurfaceRenderer {
 		return bi2;
 	}
 	
-	private Tile getEffectiveTileType( int x, int y ) 
-	{
-		Tile tile = getTileType( x, y );
-		return tile;
-	}
+        private Tile getEffectiveTileType(int x, int y) {
+            return getTileType(x, y);
+        }
 
-	private boolean isTreeorBush(Tile tileType) 
-	{
-		if ( tileType.isBush() || tileType.isTree() ) 
-		{
-			return true;
-		}
-		return false;
-	}
+        private boolean isTreeorBush(Tile tileType) {
+            if (tileType == null) return false;
+            return tileType.isBush() || tileType.isTree();
+        }
 
-	private boolean isField(Tile tileType) 
-	{
-		if ( ( tileType == Tile.TILE_FIELD ) || ( tileType == Tile.TILE_FIELD2 ) ) 
-		{
-			return true;
-		}
-		return false;
-	}
+        private boolean isField(Tile tileType) {
+            if (tileType == null) return false;
+            return tileType == Tile.TILE_FIELD || tileType == Tile.TILE_FIELD2;
+        }
 
 	@Override
-	public void pick( PickData pickData, float xMouse, float yMouse, int width, int height, int px, int py ) 
+	public void pick(PickData pickData, float xMouse, float yMouse, int width, int height, int px, int py) 
 	{
 		final int ox = px + (int)( xMouse * width ) - width / 2;
 		final int oy = py + (int)( yMouse * height ) - height / 2;

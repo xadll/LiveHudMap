@@ -4,7 +4,7 @@
 
 	<groupId>org.gotti.wurmunlimited</groupId>
 	<artifactId>livemap</artifactId>
-	<version>1.8.7-hax-sklo</version>
+	<version>1.8.8-hax-sklo</version>
 	<packaging>jar</packaging>
 
 	<name>livemap</name>
@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>org.gotti.wurmunlimited</groupId>
 			<artifactId>client-modlauncher</artifactId>
-			<version>0.10</version>
+			<version>0.15</version>
 		</dependency>
 		<dependency>
 			<groupId>org.gotti.wurmunlimited</groupId>
@@ -25,11 +25,18 @@
 			<artifactId>common-client</artifactId>
 			<version>3127451</version>
 		</dependency>
-		<dependency>
-			<groupId>org.lwjgl.lwjgl</groupId>
-			<artifactId>lwjgl</artifactId>
-			<version>2.9.1</version>
-		</dependency>
+                <!-- Source: https://mvnrepository.com/artifact/org.javassist/javassist -->
+                <dependency>
+                    <groupId>org.javassist</groupId>
+                    <artifactId>javassist</artifactId>
+                    <version>3.23.1-GA</version>
+                    <scope>compile</scope>
+                </dependency>
+<!--		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.20.0-GA</version>
+		</dependency>-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
