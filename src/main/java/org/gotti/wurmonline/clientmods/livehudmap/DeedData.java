@@ -19,12 +19,14 @@ public class DeedData {
     private static String jsonPath = "";
     public static byte[][] map;
     public static boolean showDeeds;
+    private static int size = 0;
 
     /**
      * 
      * @param size Should be maximum world size of all servers in config
      */
     public void initMap(int size) {
+        this.size = size;
         map = new byte[size+1][size+1];
     }
     
@@ -62,11 +64,11 @@ public class DeedData {
 
                 for ( int i = xPerimeterStart.intValue(); i <= xPerimeterEnd; i ++)
                 {
-                    if ( ( i >= 0 ) && ( i <= 4096 ) )
+                    if ( ( i >= 0 ) && ( i <= size ) )
                     {
                         for ( int j = yPerimeterStart.intValue(); j <= yPerimeterEnd; j ++)
                         {
-                            if ( ( j >= 0 ) && ( j <= 4096 ) )
+                            if ( ( j >= 0 ) && ( j <= size ) )
                             {
                                 if ( ( i > xStart ) && ( i <= xEnd ) && ( j > yStart  ) && ( j <= yEnd ) )
                                 {
@@ -108,9 +110,9 @@ public class DeedData {
 
     private void resetMapData()
     {
-        for (int i = 1; i <= 4096; i ++)
+        for (int i = 1; i <= size; i ++)
         {
-            for (int j = 1; j <= 4096; j++)
+            for (int j = 1; j <= size; j++)
             {
                 map[i][j] = 0;
             }
