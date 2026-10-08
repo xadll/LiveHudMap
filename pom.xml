@@ -4,7 +4,7 @@
 
 	<groupId>org.gotti.wurmunlimited</groupId>
 	<artifactId>livemap</artifactId>
-	<version>1.8.8-hax-sklo</version>
+	<version>1.8.9-hax-sklo</version>
 	<packaging>jar</packaging>
 
 	<name>livemap</name>
