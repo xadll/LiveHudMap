@@ -31,7 +31,7 @@ public class LiveHudMapMod implements WurmClientMod, PreInitable, Initable, Conf
 
     public static final Logger LOG = Logger.getLogger(LiveHudMapMod.class.getName());
 
-    private final LiveMapModState state = new LiveMapModState();
+    public final LiveMapModState state = new LiveMapModState();
 
     private LiveMapWindow liveMapWindow;
 

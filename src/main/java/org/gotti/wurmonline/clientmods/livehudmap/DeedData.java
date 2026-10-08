@@ -17,9 +17,17 @@ public class DeedData {
     private static final Logger LOG = LiveHudMapMod.LOG;
     
     private static String jsonPath = "";
-    public static byte[][] map = new byte[4097][4097];
+    public static byte[][] map;
     public static boolean showDeeds;
 
+    /**
+     * 
+     * @param size Should be maximum world size of all servers in config
+     */
+    public void initMap(int size) {
+        map = new byte[size+1][size+1];
+    }
+    
     private static void parseMapData() {
         JSONParser parser = new JSONParser();
         String lJsonString = ""; 

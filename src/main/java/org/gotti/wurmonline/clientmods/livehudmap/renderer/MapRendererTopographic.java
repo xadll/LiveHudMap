@@ -22,95 +22,87 @@ public class MapRendererTopographic extends AbstractSurfaceRenderer {
                 mBuffer = buffer;
 	}
 
-	@Override
-	public BufferedImage createMapDump(int xo, int yo, int lWidth, int lHeight, int px, int py) {
-		if (yo < 0)
-			yo = 0;
-		if (xo < 0)
-			xo = 0;
+        @Override
+        public BufferedImage createMapDump(int xo, int yo, int lWidth, int lHeight, int px, int py) {
 
-		final BufferedImage bi2 = new BufferedImage(lWidth, lWidth, BufferedImage.TYPE_INT_RGB);
-		final float[] data = new float[lWidth * lWidth * 3];
+            final BufferedImage bi2 = new BufferedImage(lWidth, lWidth, BufferedImage.TYPE_INT_RGB);
+            final float[] data = new float[lWidth * lWidth * 3];
 
-		for (int x = 0; x < lWidth; x++) {
-			for (int y = lWidth - 1; y >= 0; y--) {
-                            
-				final int tx = x + xo;
-				final int ty = y + yo;
-                                
-				final short height = getSurfaceHeight(x + xo, y + yo);
-				final short nearHeightNX = x == 0 ? height : getSurfaceHeight(x + xo - 1, y + yo);
-				final short nearHeightNY = y == 0 ? height : getSurfaceHeight(x + xo, y + yo - 1);
-				final short nearHeightX = x == lWidth - 1 ? height : getSurfaceHeight(x + xo + 1, y + yo);
-				final short nearHeightY = y == lWidth - 1 ? height : getSurfaceHeight(x + xo, y + yo + 1);
-				boolean isControur = checkContourLine(height, nearHeightNX, interval)
-						|| checkContourLine(height, nearHeightNY, interval)
-						|| checkContourLine(height, nearHeightX, interval)
-						|| checkContourLine(height, nearHeightY, interval);
+            for (int x = 0; x < lWidth; x++) {
+                for (int y = lWidth - 1; y >= 0; y--) {
 
-				final Tile tile = getTileType(x + xo, y + yo);
-				final Color color;
-				if (tile != null) {
-					color = tile.getColor();
-				}
-				else {
-					color = Tile.TILE_DIRT.getColor();
-				}
-				int r = color.getRed();
-				int g = color.getGreen();
-				int b = color.getBlue();
-				if (isControur) {
-					r = 0;
-					g = 0;
-					b = 0;
-				}
-				else if (height < 0) {
-					r = (int) (r * 0.2f + 0.4f * 0.4f * 256f);
-					g = (int) (g * 0.2f + 0.5f * 0.4f * 256f);
-					b = (int) (b * 0.2f + 1.0f * 0.4f * 256f);
-				}
+                    final int tx = x + xo;
+                    final int ty = y + yo;
 
-				if (px == x + xo && py == y + yo) {
-					r = Color.RED.getRed();
-					g = 0;
-					b = 0;
-				}
-                                
-				if ( DeedData.showDeeds )
-				{
-					if ( DeedData.map[tx][ty] == (byte)1 )
-					{
-						if ( g <= 215 )
-						{
-							g = g + 40;
-						}
-						else
-						{
-							g = 255;
-						}
-					}
-					else if ( DeedData.map[tx][ty] == (byte)2 )
-					{
-						if ( r <= 215 )
-						{
-							r = r + 40;
-						}
-						else
-						{
-							r = 255;
-						}
-					}
-				}
+                    int r = 0;
+                    int g = 0;
+                    int b = 0;
 
-				data[(x + y * lWidth) * 3 + 0] = r;
-				data[(x + y * lWidth) * 3 + 1] = g;
-				data[(x + y * lWidth) * 3 + 2] = b;
-			}
-		}
+                    // Check if coordinates are within world and DeedData map bounds
+                    boolean isValidCoord = false;
+                    if (DeedData.map != null && DeedData.map.length > 0) {
+                        isValidCoord = (tx >= 0 && tx < DeedData.map.length && ty >= 0 && ty < DeedData.map[0].length);
+                    }
 
-		bi2.getRaster().setPixels(0, 0, lWidth, lWidth, data);
-		return bi2;
-	}
+                    if (isValidCoord) {
+                        final short height = getSurfaceHeight(tx, ty);
+
+                        // Safely calculate neighboring heights for contour lines
+                        final short nearHeightNX = (tx - 1 >= 0) ? getSurfaceHeight(tx - 1, ty) : height;
+                        final short nearHeightNY = (ty - 1 >= 0) ? getSurfaceHeight(tx, ty - 1) : height;
+                        final short nearHeightX  = (tx + 1 < DeedData.map.length) ? getSurfaceHeight(tx + 1, ty) : height;
+                        final short nearHeightY  = (ty + 1 < DeedData.map[0].length) ? getSurfaceHeight(tx, ty + 1) : height;
+
+                        boolean isContour = checkContourLine(height, nearHeightNX, interval)
+                                || checkContourLine(height, nearHeightNY, interval)
+                                || checkContourLine(height, nearHeightX, interval)
+                                || checkContourLine(height, nearHeightY, interval);
+
+                        final Tile tile = getTileType(tx, ty);
+                        final Color color = (tile != null) ? tile.getColor() : Tile.TILE_DIRT.getColor();
+
+                        r = color.getRed();
+                        g = color.getGreen();
+                        b = color.getBlue();
+
+                        if (isContour) {
+                            r = 0;
+                            g = 0;
+                            b = 0;
+                        } else if (height < 0) {
+                            r = (int) (r * 0.2f + 0.4f * 0.4f * 256f);
+                            g = (int) (g * 0.2f + 0.5f * 0.4f * 256f);
+                            b = (int) (b * 0.2f + 1.0f * 0.4f * 256f);
+                        }
+
+                        // Render deeds
+                        if (DeedData.showDeeds) {
+                            byte deedType = DeedData.map[tx][ty];
+                            if (deedType == (byte) 1) {
+                                g = (g <= 215) ? g + 40 : 255;
+                            } else if (deedType == (byte) 2) {
+                                r = (r <= 215) ? r + 40 : 255;
+                            }
+                        }
+                    }
+                    // If !isValidCoord, r, g, b remain 0 (black void outside map)
+
+                    // Render player marker
+                    if (px == tx && py == ty) {
+                        r = Color.RED.getRed();
+                        g = 0;
+                        b = 0;
+                    }
+
+                    data[(x + y * lWidth) * 3 + 0] = r;
+                    data[(x + y * lWidth) * 3 + 1] = g;
+                    data[(x + y * lWidth) * 3 + 2] = b;
+                }
+            }
+
+            bi2.getRaster().setPixels(0, 0, lWidth, lWidth, data);
+            return bi2;
+        }
 
 	private boolean checkContourLine(short h0, short h1, short interval) {
 		if (h0 == h1) {

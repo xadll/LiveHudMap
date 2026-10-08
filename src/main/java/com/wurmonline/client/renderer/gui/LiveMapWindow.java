@@ -41,6 +41,7 @@ public class LiveMapWindow extends WWindow {
 
         setTitle(String.format("Live map: %s", state.getSelectedServer().serverName));
         
+        deedData.initMap(state.getMaxServerSize());
         deedData.setShowDeeds(state.isShowDeeds());
         deedData.setJsonPath(state.getSelectedServer().deedsJsonUrl);
         deedData.refreshMap();

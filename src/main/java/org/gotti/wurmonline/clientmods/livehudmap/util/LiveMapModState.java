@@ -38,6 +38,16 @@ public class LiveMapModState {
         loadServerItems(p);
     }
     
+    public int getMaxServerSize() {
+        int maxSize = 0;
+        for (ServerItem server : servers) {
+            if (server.serverSize > maxSize) {
+                maxSize = server.serverSize;
+            }
+        }
+        return maxSize;
+    }
+    
     public ServerItem getSelectedServer() {
         return selectedServer;
     }

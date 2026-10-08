@@ -4,9 +4,13 @@ import java.awt.image.BufferedImage;
 
 import com.wurmonline.client.game.NearTerrainDataBuffer;
 import com.wurmonline.mesh.Tiles.Tile;
+import java.util.logging.Logger;
+import org.gotti.wurmonline.clientmods.livehudmap.LiveHudMapMod;
 
 public abstract class AbstractSurfaceRenderer implements MapRenderer {
 
+    public static final Logger LOG = Logger.getLogger(LiveHudMapMod.class.getName());
+    
 	protected static final float MAP_HEIGHT = 1000;
 
 	public abstract BufferedImage createMapDump(int xo, int yo, int lWidth, int lHeight, int px, int py);
